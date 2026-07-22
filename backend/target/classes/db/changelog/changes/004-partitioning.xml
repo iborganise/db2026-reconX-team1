@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+          http://www.liquibase.org/xml/ns/dbchangelog
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="004-partition-current-month" author="trainer">
+
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+        </preConditions>
+
+        <comment>
+            Placeholder for ADV007 partitioning.
+        </comment>
+
+        <sql>
+            SELECT 1;
+        </sql>
+
+        <rollback>
+            <sql>
+                SELECT 1;
+            </sql>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>
