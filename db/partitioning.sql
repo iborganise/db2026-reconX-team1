@@ -1,14 +1,12 @@
 -- ============================================================================
--- TICKET-ADV007 — Convert trades to monthly range-partitioned table (Postgres)
---
--- WARNING: destructive. Run in a maintenance window — copies the entire
--- trades table into a new partitioned trades, then renames.
+-- TICKET-ADV007 — Convert trades to monthly range-partitioned table
 -- ============================================================================
 
--- 1. Rename existing
+-- 1. Rename existing table
 ALTER TABLE trades RENAME TO trades_legacy;
 
--- 2. Create partitioned parent (same columns)
+
+-- 2. Create partitioned parent table
 CREATE TABLE trades (
     id              BIGSERIAL,
     trade_ref       VARCHAR(30)   NOT NULL,
@@ -23,19 +21,58 @@ CREATE TABLE trades (
     deleted_at      TIMESTAMPTZ,
     created_at      TIMESTAMPTZ   NOT NULL DEFAULT now(),
     modified_at     TIMESTAMPTZ,
+
     PRIMARY KEY (id, trade_date)
+
 ) PARTITION BY RANGE (trade_date);
 
--- 3. Per-month partitions (12-month rolling window). Add new ones on schedule.
+
+
+-- 3. Monthly partitions April - July 2026
+
+CREATE TABLE trades_y2026m04 PARTITION OF trades
+FOR VALUES FROM ('2026-04-01') TO ('2026-05-01');
+
+
 CREATE TABLE trades_y2026m05 PARTITION OF trades
-    FOR VALUES FROM ('2026-05-01') TO ('2026-06-01');
+FOR VALUES FROM ('2026-05-01') TO ('2026-06-01');
+
+
 CREATE TABLE trades_y2026m06 PARTITION OF trades
-    FOR VALUES FROM ('2026-06-01') TO ('2026-07-01');
+FOR VALUES FROM ('2026-06-01') TO ('2026-07-01');
+
+
 CREATE TABLE trades_y2026m07 PARTITION OF trades
-    FOR VALUES FROM ('2026-07-01') TO ('2026-08-01');
+FOR VALUES FROM ('2026-07-01') TO ('2026-08-01');
 
--- 4. Migrate data
-INSERT INTO trades SELECT * FROM trades_legacy;
 
--- 5. Drop legacy table after verification
+
+-- 4. Safety catch for out-of-window inserts
+
+CREATE TABLE trades_default PARTITION OF trades DEFAULT;
+
+
+
+-- 5. Indexes (created on parent, inherited by partitions)
+
+CREATE INDEX idx_trades_status
+ON trades(status);
+
+CREATE INDEX idx_trades_instrument
+ON trades(instrument_id);
+
+CREATE INDEX idx_trades_counterparty
+ON trades(counterparty_id);
+
+
+
+-- 6. Copy old data into partitions
+
+INSERT INTO trades
+SELECT *
+FROM trades_legacy;
+
+
+
+-- 7. Remove after verification
 -- DROP TABLE trades_legacy;
