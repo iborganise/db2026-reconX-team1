@@ -38,8 +38,9 @@ spring:
 
   # ADV128 — Kafka producer/consumer defaults. Topics are created at startup
   # by KafkaTopicsConfig (see com.dbtraining.reconx.kafka.KafkaTopicsConfig).
+  # NOTE: bootstrap-servers are profile-specific so ADV060's health indicator
+  # only exists where Kafka is actually configured (e.g. uat).
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -73,7 +74,7 @@ management:
       base-path: /actuator
   endpoint:
     health:
-      show-details: when_authorized
+      show-details: always
       probes:
         enabled: true
   metrics:
