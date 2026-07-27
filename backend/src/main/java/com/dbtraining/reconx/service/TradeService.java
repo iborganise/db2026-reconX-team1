@@ -85,9 +85,10 @@ public class TradeService {
 
     @Transactional(readOnly = true)
     public Page<Trade> list(LocalDate from, LocalDate to, String status, Long counterpartyId, Pageable pageable) {
-        Specification<Trade> spec = Specification.where(tradeDateBetween(from, to))
+        Specification<Trade> spec = Specification
+                .where(tradeDateBetween(from, to))
                 .and(hasStatus(status))
-                .and(hasCounterparty(counterpartyId));
+                .and(forCounterparty(counterpartyId));
         return tradeRepo.findAll(spec, pageable);
     }
 }
