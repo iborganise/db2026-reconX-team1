@@ -15,6 +15,8 @@ spring:
     name: reconx
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  cache:
+    cache-names: instruments,counterparties
 
   # ADV012 — Liquibase classpath wiring (the classic starter bug is missing the
   # `classpath:` prefix here, which causes a silent skip on JAR builds).
@@ -31,10 +33,6 @@ spring:
       hibernate.jdbc.time_zone: UTC
 
   # ADV081-ADV082 — Caffeine cache config; per-cache spec overrides the global one.
-  cache:
-    cache-names: instruments,counterparties
-    caffeine:
-      spec: maximumSize=500,expireAfterWrite=5m
 
   # ADV128 — Kafka producer/consumer defaults. Topics are created at startup
   # by KafkaTopicsConfig (see com.dbtraining.reconx.kafka.KafkaTopicsConfig).
