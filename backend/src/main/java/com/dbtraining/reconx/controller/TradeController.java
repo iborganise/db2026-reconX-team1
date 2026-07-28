@@ -73,12 +73,23 @@ public class TradeController {
 
     @PostMapping
     @Operation(summary = "Create a trade")
-    public ResponseEntity<TradeResponse> create(@Valid @RequestBody TradeRequest req,
-                                                @AuthenticationPrincipal Object principal) {
-        // TODO(TICKET-ADV064): call service.create(req, actor), build a Location
-        //   header at /api/v1/trades/{id}, and return 201 Created with the
-        //   mapped TradeResponse body.
-        throw new UnsupportedOperationException("TICKET-ADV064");
+    public ResponseEntity<TradeResponse> create(
+            @Valid @RequestBody TradeRequest req,
+            @AuthenticationPrincipal Object principal
+    ) {
+        String actor = principal == null
+                ? "anonymous"
+                : principal.toString();
+
+        Trade saved = service.create(req, actor);
+
+        URI location = URI.create(
+                "/api/v1/trades/" + saved.getId()
+        );
+
+        return ResponseEntity
+                .created(location)
+                .body(mapper.toResponse(saved));
     }
 
     @PutMapping("/{id}")
