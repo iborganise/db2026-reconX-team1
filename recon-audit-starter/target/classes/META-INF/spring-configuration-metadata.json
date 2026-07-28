@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "name": "reconx.audit",
+      "type": "com.dbtraining.reconx.audit.AuditProperties",
+      "sourceType": "com.dbtraining.reconx.audit.AuditProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "reconx.audit.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.dbtraining.reconx.audit.AuditProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "reconx.audit.topic",
+      "type": "java.lang.String",
+      "sourceType": "com.dbtraining.reconx.audit.AuditProperties",
+      "defaultValue": "audit-events"
+    }
+  ],
+  "hints": []
+}
