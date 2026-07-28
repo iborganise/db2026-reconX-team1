@@ -94,11 +94,18 @@ public class TradeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Full update of a trade")
-    public TradeResponse update(@PathVariable Long id, @Valid @RequestBody TradeRequest req,
-                                @AuthenticationPrincipal Object principal) {
-        // TODO(TICKET-ADV065): delegate to service.update(id, req, actor) and
-        //   map the updated entity through mapper.toResponse.
-        throw new UnsupportedOperationException("TICKET-ADV065");
+    public TradeResponse update(
+            @PathVariable Long id,
+            @Valid @RequestBody TradeRequest req,
+            @AuthenticationPrincipal Object principal
+    ) {
+        String actor = principal == null
+                ? "anonymous"
+                : principal.toString();
+
+        Trade updated = service.update(id, req, actor);
+
+        return mapper.toResponse(updated);
     }
 
     @PatchMapping("/{id}/status")
