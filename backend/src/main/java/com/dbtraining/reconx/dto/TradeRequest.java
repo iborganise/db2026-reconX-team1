@@ -41,5 +41,6 @@ public record TradeRequest(
         BigDecimal price,
 
         @NotNull
+        @PastOrPresent(message = "tradeDate must be today or in the past")
         LocalDate tradeDate
 ) {}
