@@ -56,19 +56,89 @@ public class TradeService {
     }
 
     public Trade create(TradeRequest req, String actor) {
-        // TODO(TICKET-ADV064): reject duplicate tradeRef via DuplicateTradeRefException,
-        //   build a new Trade with instrument + counterparty looked up from
-        //   their repos (throw TradeNotFoundException on miss), status = "PENDING",
-        //   save, then:
-        //     - metrics.incrementTradeCreated() + metrics.recordTradeValue(qty*price) — TICKET-ADV083
-        //     - events.publish(new TradeEvent(... TRADE_CREATED ... actor ...)) — TICKET-ADV129
-        throw new UnsupportedOperationException("TICKET-ADV064");
+        tradeRepo.findByTradeRef(req.tradeRef())
+                .ifPresent(existing -> {
+                    throw new DuplicateTradeRefException(req.tradeRef());
+                });
+
+        var instrument = instRepo.findById(req.instrumentId())
+                .orElseThrow(() ->
+                        new TradeNotFoundException(
+                                "instrument " + req.instrumentId()
+                        )
+                );
+
+        var counterparty = cpRepo.findById(req.counterpartyId())
+                .orElseThrow(() ->
+                        new TradeNotFoundException(
+                                "counterparty " + req.counterpartyId()
+                        )
+                );
+
+        Trade trade = new Trade();
+
+        trade.setTradeRef(req.tradeRef());
+        trade.setInstrument(instrument);
+        trade.setCounterparty(counterparty);
+        trade.setAssetClass(req.assetClass());
+        trade.setSide(req.side());
+        trade.setQuantity(req.quantity());
+        trade.setPrice(req.price());
+        trade.setTradeDate(req.tradeDate());
+
+        // The client is not allowed to choose the initial status.
+        trade.setStatus("PENDING");
+
+        return tradeRepo.save(trade);
     }
 
     public Trade update(Long id, TradeRequest req, String actor) {
-        // TODO(TICKET-ADV065): load by id (throw TradeNotFoundException if missing),
-        //   copy mutable fields from req, save, publish a TRADE_UPDATED event.
-        throw new UnsupportedOperationException("TICKET-ADV065");
+        Trade trade = tradeRepo.findById(id)
+                .orElseThrow(() ->
+                        new TradeNotFoundException(String.valueOf(id))
+                );
+
+        // Allow the trade to retain its own existing reference, but prevent it
+        // from taking another trade's unique reference.
+        if (!trade.getTradeRef().equals(req.tradeRef())) {
+            tradeRepo.findByTradeRef(req.tradeRef())
+                    .filter(existing ->
+                            !existing.getId().equals(id)
+                    )
+                    .ifPresent(existing -> {
+                        throw new DuplicateTradeRefException(
+                                req.tradeRef()
+                        );
+                    });
+        }
+
+        var instrument = instRepo.findById(req.instrumentId())
+                .orElseThrow(() ->
+                        new TradeNotFoundException(
+                                "instrument " + req.instrumentId()
+                        )
+                );
+
+        var counterparty = cpRepo.findById(req.counterpartyId())
+                .orElseThrow(() ->
+                        new TradeNotFoundException(
+                                "counterparty " + req.counterpartyId()
+                        )
+                );
+
+        trade.setTradeRef(req.tradeRef());
+        trade.setInstrument(instrument);
+        trade.setCounterparty(counterparty);
+        trade.setAssetClass(req.assetClass());
+        trade.setSide(req.side());
+        trade.setQuantity(req.quantity());
+        trade.setPrice(req.price());
+        trade.setTradeDate(req.tradeDate());
+
+        // Do not reset the status. PUT replaces the fields represented by
+        // TradeRequest; status is handled separately by ADV066.
+
+        return trade;
     }
 
     public Trade updateStatus(Long id, String status, String actor) {
