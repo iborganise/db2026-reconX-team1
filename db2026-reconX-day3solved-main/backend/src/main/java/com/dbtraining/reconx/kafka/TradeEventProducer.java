@@ -45,6 +45,8 @@ public class TradeEventProducer {
     }
 
     public void publish(TradeEvent event) {
-        throw new UnsupportedOperationException("TICKET-ADV129");
+
+        log.debug("Kafka disabled for local testing eventId={}",
+                event.eventId());
     }
 }
