@@ -37,7 +37,6 @@
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/model/TradeType.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/observability/DatabaseHealthIndicator.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/observability/KafkaHealthIndicator.java
-/home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/observability/MdcFilter.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/observability/TradeMetrics.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/repository/AppUserRepository.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/repository/AuditLogRepository.java
