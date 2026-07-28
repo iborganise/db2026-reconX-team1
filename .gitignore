@@ -1,0 +1,9 @@
+# Maven build output
+/backend/target/
+
+# IntelliJ project files
+.idea/
+
+# OS / editor files
+*.log
+*.tmp
