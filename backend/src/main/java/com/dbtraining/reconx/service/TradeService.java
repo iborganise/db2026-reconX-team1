@@ -87,9 +87,20 @@ public class TradeService {
         trade.setTradeDate(req.tradeDate());
 
         // The client is not allowed to choose the initial status.
+        // The client is not allowed to choose the initial status.
         trade.setStatus("PENDING");
 
-        return tradeRepo.save(trade);
+        Trade saved = tradeRepo.save(trade);
+
+        metrics.incrementTradeCreated();
+
+        double tradeNotional = saved.getQuantity()
+                .multiply(saved.getPrice())
+                .doubleValue();
+
+        metrics.recordTradeValue(tradeNotional);
+
+        return saved;
     }
 
     public Trade update(Long id, TradeRequest req, String actor) {
