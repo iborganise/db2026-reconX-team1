@@ -1,7 +1,9 @@
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/ReconxApplication.java
+/home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/config/CacheConfig.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/config/OpenApiConfig.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/controller/AuditController.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/controller/AuthController.java
+/home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/controller/LegacyTradeController.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/controller/ReconController.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/controller/TradeController.java
 /home/ibrahimg/Documents/reconxteam1_new/db2026-reconX-team1/backend/src/main/java/com/dbtraining/reconx/dto/LoginRequest.java
