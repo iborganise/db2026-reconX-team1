@@ -78,3 +78,93 @@ body {
 
 button { padding: var(--space-1) var(--space-2); border: 1px solid var(--color-border); background: transparent; color: inherit; border-radius: var(--radius); cursor: pointer; }
 :focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+
+.table-scroll {
+  overflow: auto;
+  max-height: 60vh;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  z-index: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table thead th[aria-sort="ascending"]::after {
+  content: " ▲";
+}
+
+.data-table thead th[aria-sort="descending"]::after {
+  content: " ▼";
+}
+
+.resize-handle {
+  display: inline-block;
+  width: 6px;
+  height: 18px;
+  margin-left: var(--space-2);
+  cursor: col-resize;
+  background: var(--color-border);
+  vertical-align: middle;
+}
+.table-scroll {
+  overflow: auto;
+  max-height: 60vh;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-bg);
+  z-index: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.data-table tbody tr:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.resize-handle {
+  display: inline-block;
+  width: 6px;
+  height: 18px;
+  margin-left: var(--space-2);
+  cursor: col-resize;
+  background: var(--color-border);
+  vertical-align: middle;
+}

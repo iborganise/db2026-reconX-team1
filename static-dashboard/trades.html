@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>ReconX — Trades</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="layout__header" role="banner">
+    <h1 class="layout__title">ReconX</h1>
+    <nav class="layout__nav" aria-label="Main navigation">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="trades.html" aria-current="page">Trades</a>
+      <a href="recon.html">Recon</a>
+    </nav>
+  </header>
+
+  <aside class="layout__sidebar" role="complementary">
+    <h2>Quick filters</h2>
+    <ul>
+      <li><a href="#">All trades</a></li>
+      <li><a href="#">Open breaks</a></li>
+      <li><a href="#">Today</a></li>
+    </ul>
+  </aside>
+
+  <main class="layout__main" role="main">
+    <section aria-labelledby="trades-title">
+      <h2 id="trades-title">Trades</h2>
+      <div class="table-scroll">
+        <table class="data-table" id="trades-table">
+          <thead>
+            <tr>
+              <th data-col="tradeRef" data-type="string">Trade Ref <span class="resize-handle"></span></th>
+              <th data-col="symbol" data-type="string">Instrument <span class="resize-handle"></span></th>
+              <th data-col="quantity" data-type="number">Quantity <span class="resize-handle"></span></th>
+              <th data-col="price" data-type="number">Price <span class="resize-handle"></span></th>
+              <th data-col="status" data-type="string">Status <span class="resize-handle"></span></th>
+            </tr>
+          </thead>
+          <tbody id="trades-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="layout__footer" role="contentinfo">
+    <small>ReconX TDI 2026 · static dashboard</small>
+  </footer>
+
+  <script src="js/trades.js"></script>
+</body>
+</html>
