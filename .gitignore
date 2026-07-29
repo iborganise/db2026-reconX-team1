@@ -7,3 +7,5 @@
 # OS / editor files
 *.log
 *.tmp
+
+target/*

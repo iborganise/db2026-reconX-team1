@@ -8,6 +8,7 @@ com/dbtraining/reconx/dto/PagedResponse.class
 com/dbtraining/reconx/dto/LoginRequest.class
 com/dbtraining/reconx/security/SecurityConfig.class
 com/dbtraining/reconx/observability/DatabaseHealthIndicator.class
+com/dbtraining/reconx/config/ObservabilityConfig.class
 com/dbtraining/reconx/exception/DuplicateTradeRefException.class
 com/dbtraining/reconx/model/EquityTrade.class
 com/dbtraining/reconx/dto/ReconResult$Status.class
