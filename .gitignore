@@ -1,11 +1,22 @@
 # Maven build output
 /backend/target/
+target/*
 
-# IntelliJ project files
+# Node / Frontend build output & dependencies
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+**/.vite/
+
+# IntelliJ / IDE project files
 .idea/
+.vscode/
 
-# OS / editor files
+# OS / local environment files
 *.log
 *.tmp
-
-target/*
+.DS_Store
+.env.local
+.env.*.local
