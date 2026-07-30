@@ -11,8 +11,8 @@ export function useInfiniteScroll(loadMore) {
   useEffect(() => {
     loadMoreRef.current = loadMore;
   }, [loadMore]);
-  // Create IntersectionObserver once
-// Create IntersectionObserver once sandeep
+
+
   // Create IntersectionObserver once
   useEffect(() => {
 
