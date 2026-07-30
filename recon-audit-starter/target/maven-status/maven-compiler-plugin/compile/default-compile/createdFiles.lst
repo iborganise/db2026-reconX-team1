@@ -1,4 +1,4 @@
-com/dbtraining/reconx/audit/AuditEventPublisher.class
-META-INF/spring-configuration-metadata.json
-com/dbtraining/reconx/audit/AuditProperties.class
-com/dbtraining/reconx/audit/AuditAutoConfiguration.class
+com\dbtraining\reconx\audit\AuditAutoConfiguration.class
+com\dbtraining\reconx\audit\AuditProperties.class
+META-INF\spring-configuration-metadata.json
+com\dbtraining\reconx\audit\AuditEventPublisher.class
