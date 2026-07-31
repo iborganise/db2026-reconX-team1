@@ -13,11 +13,17 @@ export default function Login() {
 
   async function submit(e) {
     e.preventDefault();
-    // TODO(TICKET-ADV072):
-    //   1. call api.login(email, password) — it returns { token, role }.
-    //   2. on success: call login(token, role) from AuthContext, then
-    //      navigate('/').
-    //   3. on failure: setError(err.message) so the alert div renders.
+    setError(null);
+    try {
+      const response = await api.login(email, password);
+      // Backend returns JWT token (e.g. { token: '...', role: '...' })
+      const token = response.token || response.accessToken || response;
+      const role = response.role || 'ADMIN';
+      login(token, role);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    }
   }
 
   return (
