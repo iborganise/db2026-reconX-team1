@@ -1,9 +1,9 @@
-// ThemeProvider: context flips data-theme; CSS owns colours.
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'reconx-theme';
 
-const ThemeContext = createContext({ theme: 'light', toggle: () => {} });
+// Module-scoped ThemeContext creat cu null
+const ThemeContext = createContext(null);
 
 function initialTheme() {
   if (typeof window === 'undefined') return 'light';
@@ -27,13 +27,20 @@ export function ThemeProvider({ children }) {
     }
   }, [theme]);
 
-  const toggle = () => setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  const toggle = useCallback(() => setTheme((t) => (t === 'light' ? 'dark' : 'light')), []);
 
+  // Expunem theme, setTheme și toggle
   return (
-    <ThemeContext.Provider value={{ theme, toggle }}>
-      {children}
-    </ThemeContext.Provider>
+      <ThemeContext.Provider value={{ theme, setTheme, toggle }}>
+        {children}
+      </ThemeContext.Provider>
   );
 }
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
