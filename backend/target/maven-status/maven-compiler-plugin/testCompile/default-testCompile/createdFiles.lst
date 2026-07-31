@@ -1,0 +1,4 @@
+com\dbtraining\reconx\controller\TradeControllerWebMvcTest.class
+com\dbtraining\reconx\kafka\AuditEventConsumerTest.class
+com\dbtraining\reconx\integration\LiquibaseMigrationsIT.class
+com\dbtraining\reconx\integration\TradeLifecycleIT.class
