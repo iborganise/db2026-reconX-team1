@@ -62,5 +62,3 @@ DataTable.Pagination = function Pagination({ page, totalPages, onChange }) {
     </nav>
   );
 };
-
-

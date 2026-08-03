@@ -7,22 +7,11 @@ export function withAuth(Component) {
   function WithAuth(props) {
     const { user } = useAuth();
     const location = useLocation();
-
     if (!user) {
-      return (
-          <Navigate
-              to="/login"
-              replace
-              state={{ from: location.pathname }}
-          />
-      );
+      return <Navigate to="/login" replace state={{ from: location.pathname }} />;
     }
-
     return <Component {...props} />;
   }
-
-  WithAuth.displayName =
-      `withAuth(${Component.displayName || Component.name || 'Component'})`;
-
+  WithAuth.displayName = `withAuth(${Component.displayName || Component.name || 'Component'})`;
   return WithAuth;
 }
