@@ -1,4 +1,4 @@
-// TICKET-ADV072 — Login page exchanging email/password for a JWT.
+// Login page exchanging email/password for a JWT.
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@context/AuthContext.jsx';
@@ -15,10 +15,7 @@ export default function Login() {
     e.preventDefault();
     setError(null);
     try {
-      const response = await api.login(email, password);
-      // Backend returns JWT token (e.g. { token: '...', role: '...' })
-      const token = response.token || response.accessToken || response;
-      const role = response.role || 'ADMIN';
+      const { token, role } = await api.login(email, password);
       login(token, role);
       navigate('/');
     } catch (err) {

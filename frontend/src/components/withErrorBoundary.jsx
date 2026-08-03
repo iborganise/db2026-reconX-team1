@@ -47,5 +47,3 @@ export function withErrorBoundary(Component) {
   WithErrorBoundary.displayName = `withErrorBoundary(${Component.displayName || Component.name || 'Component'})`;
   return WithErrorBoundary;
 }
-
-

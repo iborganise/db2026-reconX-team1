@@ -1,20 +1,12 @@
 // AuthContext used by withAuth HOC; JWT persisted in sessionStorage.
 import React, { createContext, useContext, useState } from 'react';
 
-export const AuthContext = createContext({
-  user: null,
-  login: () => {},
-  logout: () => {},
-});
+export const AuthContext = createContext({ user: null, login: () => {}, logout: () => {} });
 
 function readInitialUser() {
-  if (typeof sessionStorage === 'undefined') {
-    return null;
-  }
-
+  if (typeof sessionStorage === 'undefined') return null;
   const token = sessionStorage.getItem('reconx-token');
-  const role = sessionStorage.getItem('reconx-role');
-
+  const role  = sessionStorage.getItem('reconx-role');
   return token ? { token, role } : null;
 }
 
@@ -24,14 +16,8 @@ export function AuthProvider({ children }) {
   const login = (token, role) => {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('reconx-token', token);
-
-      if (role) {
-        sessionStorage.setItem('reconx-role', role);
-      } else {
-        sessionStorage.removeItem('reconx-role');
-      }
+      if (role) sessionStorage.setItem('reconx-role', role);
     }
-
     setUser({ token, role });
   };
 
@@ -40,14 +26,13 @@ export function AuthProvider({ children }) {
       sessionStorage.removeItem('reconx-token');
       sessionStorage.removeItem('reconx-role');
     }
-
     setUser(null);
   };
 
   return (
-      <AuthContext.Provider value={{ user, login, logout }}>
-        {children}
-      </AuthContext.Provider>
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

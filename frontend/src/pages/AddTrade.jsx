@@ -1,4 +1,4 @@
-// React Hook Form + Yup validation for TICKET-ADV123
+// React Hook Form + Yup validation.
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,13 +10,13 @@ const schema = yup.object({
   tradeRef:       yup.string()
                      .matches(/^[A-Z]{3}-\d{8}-\d{4}$/, 'Format: AAA-YYYYMMDD-NNNN')
                      .required('Trade reference is required'),
-  instrumentId:   yup.number().typeError('Must be a number').integer().positive().required('Instrument ID is required'),
-  counterpartyId: yup.number().typeError('Must be a number').integer().positive().required('Counterparty ID is required'),
-  assetClass:     yup.string().oneOf(['EQUITY', 'FX', 'BOND', 'DERIVATIVE']).required('Asset class is required'),
-  side:           yup.string().oneOf(['BUY', 'SELL']).required('Side is required'),
-  quantity:       yup.number().typeError('Must be a number').positive('Quantity must be positive').required('Quantity is required'),
-  price:          yup.number().typeError('Must be a number').positive('Price must be positive').required('Price is required'),
-  tradeDate:      yup.date().typeError('Must be a valid date').required('Trade date is required'),
+  instrumentId:   yup.number().typeError('Must be a number').integer().positive().required(),
+  counterpartyId: yup.number().typeError('Must be a number').integer().positive().required(),
+  assetClass:     yup.string().oneOf(['EQUITY', 'FX', 'BOND', 'DERIVATIVE']).required(),
+  side:           yup.string().oneOf(['BUY', 'SELL']).required(),
+  quantity:       yup.number().typeError('Must be a number').positive().required(),
+  price:          yup.number().typeError('Must be a number').positive().required(),
+  tradeDate:      yup.date().typeError('Must be a valid date').required(),
 });
 
 function AddTrade() {
