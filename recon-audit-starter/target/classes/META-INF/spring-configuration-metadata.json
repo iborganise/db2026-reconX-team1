@@ -10,14 +10,12 @@
     {
       "name": "reconx.audit.enabled",
       "type": "java.lang.Boolean",
-      "sourceType": "com.dbtraining.reconx.audit.AuditProperties",
-      "defaultValue": true
+      "sourceType": "com.dbtraining.reconx.audit.AuditProperties"
     },
     {
       "name": "reconx.audit.topic",
       "type": "java.lang.String",
-      "sourceType": "com.dbtraining.reconx.audit.AuditProperties",
-      "defaultValue": "audit-events"
+      "sourceType": "com.dbtraining.reconx.audit.AuditProperties"
     }
   ],
   "hints": []
