@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -71,6 +73,24 @@ public class TradeController {
 
         return PagedResponse.from(page, mapper::toResponse);
     }
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(summary = "SSE trade stream")
+    public SseEmitter stream() {
+        SseEmitter emitter = new SseEmitter(300_000L);
+        try {
+            // Send initial connection event to flush headers
+            emitter.send(SseEmitter.event().name("ping").data("connected"));
+            Page<Trade> page = service.list(null, null, null, null, org.springframework.data.domain.PageRequest.of(0, 20));
+            for (Trade trade : page.getContent()) {
+                emitter.send(SseEmitter.event()
+                        .name("message")
+                        .data(mapper.toResponse(trade)));
+            }
+        } catch (Exception ignored) {
+        }
+        return emitter;
+    }
+
     @Deprecated(since = "v1.4.0", forRemoval = true)
     @GetMapping("/old-search")
     public ResponseEntity<Void> oldSearch(HttpServletResponse response) {
