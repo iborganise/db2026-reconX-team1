@@ -49,4 +49,12 @@ public final class TradeSpecifications {
                         ? cb.conjunction()
                         : cb.like(root.get("tradeRef"), pattern + "%");
     }
+
+    public static Specification<Trade> matchesSearchTerm(String search) {
+        return (root, query, cb) -> {
+            if (search == null || search.isBlank()) return cb.conjunction();
+            String likePattern = "%" + search.toLowerCase() + "%";
+            return cb.like(cb.lower(root.get("tradeRef")), likePattern);
+        };
+    }
 }

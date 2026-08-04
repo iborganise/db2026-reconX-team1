@@ -149,11 +149,12 @@ public class TradeService {
         }
 
         @Transactional(readOnly = true)
-        public Page<Trade> list(LocalDate from, LocalDate to, String status, Long counterpartyId, Pageable pageable) {
+        public Page<Trade> list(LocalDate from, LocalDate to, String status, Long counterpartyId, String search, Pageable pageable) {
                 Specification<Trade> spec = Specification
                                 .where(tradeDateBetween(from, to))
                                 .and(hasStatus(status))
-                                .and(forCounterparty(counterpartyId));
+                                .and(forCounterparty(counterpartyId))
+                                .and(matchesSearchTerm(search));
                 return tradeRepo.findAll(spec, pageable);
         }
 }
