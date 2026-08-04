@@ -30,12 +30,30 @@ public class AppUser {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    public AppUser() {}
+    public AppUser() {
+    }
 
-    public Long getId()           { return id; }
-    public String getEmail()      { return email; }
-    public String getPasswordHash(){ return passwordHash; }
-    public String getRole()       { return role; }
-    public Boolean getEnabled()   { return enabled; }
-    public Instant getCreatedAt() { return createdAt; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 }
