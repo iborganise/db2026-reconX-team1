@@ -8,7 +8,13 @@
 FROM eclipse-temurin:25-jdk AS build
 WORKDIR /workspace
 COPY . .
-RUN if [ -f target/reconx-*.jar ]; then cp target/reconx-*.jar app.jar; else ./mvnw -q -B -DskipTests package && mv target/reconx-*.jar app.jar; fi
+RUN JAR_FILE=$(ls target/reconx-*.jar 2>/dev/null | grep -v '\.original$' | head -n 1); \
+    if [ -n "$JAR_FILE" ] && [ -f "$JAR_FILE" ]; then \
+        cp "$JAR_FILE" app.jar; \
+    else \
+        ./mvnw -q -B -DskipTests package && \
+        cp $(ls target/reconx-*.jar | grep -v '\.original$' | head -n 1) app.jar; \
+    fi
 
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S reconx && adduser -S reconx -G reconx
