@@ -15,7 +15,7 @@ function Trades() {
     let cancelled = false;
     const params = new URLSearchParams();
     params.set('page', String(page));
-    if (debounced) params.set('status', debounced);
+    if (debounced) params.set('search', debounced);
 
     api.listTrades(params.toString())
       .then((res) => {
@@ -39,10 +39,10 @@ function Trades() {
     <section>
       <h2>Trades</h2>
       <input
-        aria-label="Filter by status"
-        placeholder="status filter (PENDING/MATCHED/…)"
+        aria-label="Search trades"
+        placeholder="Search by trade reference..."
         value={search}
-        onChange={(e) => setSearch(e.target.value.toUpperCase())}
+        onChange={(e) => setSearch(e.target.value)}
       />
       <DataTable>
         <DataTable.Header columns={[

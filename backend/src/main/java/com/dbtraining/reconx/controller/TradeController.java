@@ -56,6 +56,7 @@ public class TradeController {
             @RequestParam(required = false) LocalDate to,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) Long counterpartyId,
+            @RequestParam(required = false) String search,
             @PageableDefault(
                     size = 20,
                     sort = "tradeDate",
@@ -68,6 +69,7 @@ public class TradeController {
                 to,
                 status,
                 counterpartyId,
+                search,
                 pageable
         );
 
@@ -80,7 +82,7 @@ public class TradeController {
         try {
             // Send initial connection event to flush headers
             emitter.send(SseEmitter.event().name("ping").data("connected"));
-            Page<Trade> page = service.list(null, null, null, null, org.springframework.data.domain.PageRequest.of(0, 20));
+            Page<Trade> page = service.list(null, null, null, null, null, org.springframework.data.domain.PageRequest.of(0, 20));
             for (Trade trade : page.getContent()) {
                 emitter.send(SseEmitter.event()
                         .name("message")
