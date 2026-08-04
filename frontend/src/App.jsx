@@ -2,6 +2,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { withErrorBoundary } from '@components/withErrorBoundary.jsx';
+import { HealthBadge } from '@components/HealthBadge.jsx';
 
 // Each page import is wrapped in React.lazy() so Vite emits a separate
 // chunk per route. The <Suspense> fallback below shows while the chunk downloads.
@@ -15,6 +16,7 @@ function App() {
     <div className="layout">
       <header className="layout__header">
         <h1>ReconX</h1>
+        <HealthBadge />
         <nav className="layout__nav">
           <Link to="/">Dashboard</Link>
           <Link to="/trades">Trades</Link>
