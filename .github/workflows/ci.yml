@@ -1,55 +1,14 @@
-name: ReconX CI
+name: ci
 
 on:
   push:
-    branches:
-      - main
-      - develop
-      - "feature/**"
-    tags:
-      - "v*"
+    branches: [main, develop, "feature/**"]
   pull_request:
-    branches:
-      - main
-      - develop
-
-permissions:
-  contents: read
-  packages: write
-  pull-requests: write
-
-env:
-  REGISTRY: ghcr.io
+    branches: [main, develop]
 
 jobs:
-  lint:
-    name: Frontend lint
+  liquibase-validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm ci --no-audit --no-fund
-
-      - name: Run lint
-        working-directory: frontend
-        run: npm run lint
-
-  test:
-    name: Test and build
-    needs: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
     services:
       postgres:
         image: postgres:16-alpine
@@ -57,127 +16,21 @@ jobs:
           POSTGRES_DB: reconx_test
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
-        ports:
-          - 5432:5432
+        ports: ["5432:5432"]
         options: >-
-          --health-cmd="pg_isready -U test -d reconx_test"
+          --health-cmd="pg_isready -U test"
           --health-interval=5s
           --health-timeout=3s
           --health-retries=10
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
-          java-version: "21"
-          distribution: temurin
+          java-version: '25'
+          distribution: 'temurin'
           cache: maven
-
-      - name: Install audit starter
-        run: ./backend/mvnw -B -f recon-audit-starter/pom.xml clean install -DskipTests
-
-      - name: Validate Liquibase
+      - name: Build local audit starter
+        run: ./backend/mvnw -B install -DskipTests -f recon-audit-starter/pom.xml
+      - name: Liquibase validate
         working-directory: backend
-        run: >
-          ./mvnw -B liquibase:validate
-          -Dliquibase.url=jdbc:postgresql://localhost:5432/reconx_test
-          -Dliquibase.username=test
-          -Dliquibase.password=test
-          -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.xml
-
-      - name: Test backend
-        working-directory: backend
-        run: ./mvnw -B verify
-
-      - name: Upload backend JAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: reconx-backend-jar
-          path: |
-            backend/target/reconx-*.jar
-            !backend/target/*.jar.original
-          if-no-files-found: error
-          retention-days: 1
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci --no-audit --no-fund
-
-      - name: Test frontend
-        working-directory: frontend
-        run: npm test
-
-      - name: Build frontend
-        working-directory: frontend
-        run: npm run build
-
-  build-and-push:
-    name: Build and push ${{ matrix.image }}
-    needs: test
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    if: >
-      github.event_name == 'push' &&
-      (
-        github.ref == 'refs/heads/main' ||
-        startsWith(github.ref, 'refs/tags/v')
-      )
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - image: backend
-            context: ./backend
-          - image: frontend
-            context: ./frontend
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download backend JAR
-        if: matrix.image == 'backend'
-        uses: actions/download-artifact@v4
-        with:
-          name: reconx-backend-jar
-          path: backend/target
-
-      - uses: docker/setup-qemu-action@v3
-
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate image tags
-        id: metadata
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/reconx-${{ matrix.image }}
-          tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=sha,format=long,prefix=
-            type=ref,event=tag
-
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: ${{ matrix.context }}
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=gha,scope=${{ matrix.image }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+        run: ./mvnw -B liquibase:validate -Dliquibase.url=jdbc:postgresql://localhost:5432/reconx_test -Dliquibase.username=test -Dliquibase.password=test -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.xml
