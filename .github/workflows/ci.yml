@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Run lint
         working-directory: frontend
@@ -108,7 +108,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Test frontend
         working-directory: frontend
