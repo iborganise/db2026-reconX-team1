@@ -29,6 +29,8 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
+      - name: Build local audit starter
+        run: ./backend/mvnw -B install -DskipTests -f recon-audit-starter/pom.xml
       - name: Liquibase validate
         working-directory: backend
         run: ./mvnw -B liquibase:validate -Dliquibase.url=jdbc:postgresql://localhost:5432/reconx_test -Dliquibase.username=test -Dliquibase.password=test -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.xml
