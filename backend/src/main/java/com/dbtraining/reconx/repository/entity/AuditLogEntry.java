@@ -39,10 +39,11 @@ public class AuditLogEntry {
     @Column(name = "after_state", columnDefinition = "TEXT")
     private String afterState;
 
-    public AuditLogEntry() {}
+    public AuditLogEntry() {
+    }
 
     public AuditLogEntry(String eventId, String tradeRef, String eventType,
-                         Instant ts, String actor, String before, String after) {
+            Instant ts, String actor, String before, String after) {
         this.eventId = eventId;
         this.tradeRef = tradeRef;
         this.eventType = eventType;
@@ -52,12 +53,35 @@ public class AuditLogEntry {
         this.afterState = after;
     }
 
-    public Long getId()              { return id; }
-    public String getEventId()       { return eventId; }
-    public String getTradeRef()      { return tradeRef; }
-    public String getEventType()     { return eventType; }
-    public Instant getEventTimestamp(){ return eventTimestamp; }
-    public String getActor()         { return actor; }
-    public String getBeforeState()   { return beforeState; }
-    public String getAfterState()    { return afterState; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public String getTradeRef() {
+        return tradeRef;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public Instant getEventTimestamp() {
+        return eventTimestamp;
+    }
+
+    public String getActor() {
+        return actor;
+    }
+
+    public String getBeforeState() {
+        return beforeState;
+    }
+
+    public String getAfterState() {
+        return afterState;
+    }
 }

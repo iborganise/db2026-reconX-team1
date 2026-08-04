@@ -33,18 +33,44 @@ public class ReconBreak {
     @Column(name = "resolution_note", length = 500)
     private String resolutionNote;
 
-    public ReconBreak() {}
+    public ReconBreak() {
+    }
 
-    public Long getId()                { return id; }
-    public Long getTradeId()           { return tradeId; }
-    public String getDiscrepancyType() { return discrepancyType; }
-    public String getStatus()          { return status; }
-    public Instant getDetectedAt()     { return detectedAt; }
-    public Instant getResolvedAt()     { return resolvedAt; }
-    public String getResolutionNote()  { return resolutionNote; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setTradeId(Long v)              { this.tradeId = v; }
-    public void setDiscrepancyType(String v)    { this.discrepancyType = v; }
+    public Long getTradeId() {
+        return tradeId;
+    }
+
+    public String getDiscrepancyType() {
+        return discrepancyType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Instant getDetectedAt() {
+        return detectedAt;
+    }
+
+    public Instant getResolvedAt() {
+        return resolvedAt;
+    }
+
+    public String getResolutionNote() {
+        return resolutionNote;
+    }
+
+    public void setTradeId(Long v) {
+        this.tradeId = v;
+    }
+
+    public void setDiscrepancyType(String v) {
+        this.discrepancyType = v;
+    }
 
     public void resolve(String note) {
         this.status = "RESOLVED";

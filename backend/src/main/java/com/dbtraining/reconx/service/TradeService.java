@@ -37,140 +37,123 @@ import static com.dbtraining.reconx.repository.TradeSpecifications.*;
 @Transactional
 public class TradeService {
 
-    private final TradeRepository tradeRepo;
-    private final CounterpartyRepository cpRepo;
-    private final InstrumentRepository instRepo;
-    private final TradeEventProducer events;
-    private final TradeMetrics metrics;
+        private final TradeRepository tradeRepo;
+        private final CounterpartyRepository cpRepo;
+        private final InstrumentRepository instRepo;
+        private final TradeEventProducer events;
+        private final TradeMetrics metrics;
 
-    public TradeService(TradeRepository tradeRepo,
+        public TradeService(TradeRepository tradeRepo,
                         CounterpartyRepository cpRepo,
                         InstrumentRepository instRepo,
                         TradeEventProducer events,
                         TradeMetrics metrics) {
-        this.tradeRepo = tradeRepo;
-        this.cpRepo = cpRepo;
-        this.instRepo = instRepo;
-        this.events = events;
-        this.metrics = metrics;
-    }
-
-    public Trade create(TradeRequest req, String actor) {
-        tradeRepo.findByTradeRef(req.tradeRef())
-                .ifPresent(existing -> {
-                    throw new DuplicateTradeRefException(req.tradeRef());
-                });
-
-        var instrument = instRepo.findById(req.instrumentId())
-                .orElseThrow(() ->
-                        new TradeNotFoundException(
-                                "instrument " + req.instrumentId()
-                        )
-                );
-
-        var counterparty = cpRepo.findById(req.counterpartyId())
-                .orElseThrow(() ->
-                        new TradeNotFoundException(
-                                "counterparty " + req.counterpartyId()
-                        )
-                );
-
-        Trade trade = new Trade();
-
-        trade.setTradeRef(req.tradeRef());
-        trade.setInstrument(instrument);
-        trade.setCounterparty(counterparty);
-        trade.setAssetClass(req.assetClass());
-        trade.setSide(req.side());
-        trade.setQuantity(req.quantity());
-        trade.setPrice(req.price());
-        trade.setTradeDate(req.tradeDate());
-
-        // The client is not allowed to choose the initial status.
-        trade.setStatus("PENDING");
-
-        Trade saved = tradeRepo.save(trade);
-
-        metrics.incrementTradeCreated();
-
-        double tradeNotional = saved.getQuantity()
-                .multiply(saved.getPrice())
-                .doubleValue();
-
-        metrics.recordTradeValue(tradeNotional);
-
-        return saved;
-    }
-
-    public Trade update(Long id, TradeRequest req, String actor) {
-        Trade trade = tradeRepo.findById(id)
-                .orElseThrow(() ->
-                        new TradeNotFoundException(String.valueOf(id))
-                );
-
-        // Allow the trade to retain its own existing reference, but prevent it
-        // from taking another trade's unique reference.
-        if (!trade.getTradeRef().equals(req.tradeRef())) {
-            tradeRepo.findByTradeRef(req.tradeRef())
-                    .filter(existing ->
-                            !existing.getId().equals(id)
-                    )
-                    .ifPresent(existing -> {
-                        throw new DuplicateTradeRefException(
-                                req.tradeRef()
-                        );
-                    });
+                this.tradeRepo = tradeRepo;
+                this.cpRepo = cpRepo;
+                this.instRepo = instRepo;
+                this.events = events;
+                this.metrics = metrics;
         }
 
-        var instrument = instRepo.findById(req.instrumentId())
-                .orElseThrow(() ->
-                        new TradeNotFoundException(
-                                "instrument " + req.instrumentId()
-                        )
-                );
+        public Trade create(TradeRequest req, String actor) {
+                tradeRepo.findByTradeRef(req.tradeRef())
+                                .ifPresent(existing -> {
+                                        throw new DuplicateTradeRefException(req.tradeRef());
+                                });
 
-        var counterparty = cpRepo.findById(req.counterpartyId())
-                .orElseThrow(() ->
-                        new TradeNotFoundException(
-                                "counterparty " + req.counterpartyId()
-                        )
-                );
+                var instrument = instRepo.findById(req.instrumentId())
+                                .orElseThrow(() -> new TradeNotFoundException(
+                                                "instrument " + req.instrumentId()));
 
-        trade.setTradeRef(req.tradeRef());
-        trade.setInstrument(instrument);
-        trade.setCounterparty(counterparty);
-        trade.setAssetClass(req.assetClass());
-        trade.setSide(req.side());
-        trade.setQuantity(req.quantity());
-        trade.setPrice(req.price());
-        trade.setTradeDate(req.tradeDate());
+                var counterparty = cpRepo.findById(req.counterpartyId())
+                                .orElseThrow(() -> new TradeNotFoundException(
+                                                "counterparty " + req.counterpartyId()));
 
-        // Do not reset the status. PUT replaces the fields represented by
-        // TradeRequest; status is handled separately by ADV066.
+                Trade trade = new Trade();
 
-        return trade;
-    }
+                trade.setTradeRef(req.tradeRef());
+                trade.setInstrument(instrument);
+                trade.setCounterparty(counterparty);
+                trade.setAssetClass(req.assetClass());
+                trade.setSide(req.side());
+                trade.setQuantity(req.quantity());
+                trade.setPrice(req.price());
+                trade.setTradeDate(req.tradeDate());
 
-    public Trade updateStatus(Long id, String status, String actor) {
-        Trade trade = tradeRepo.findById(id)
-                .orElseThrow(() -> new TradeNotFoundException("id"+id));
-        trade.setStatus(status);
-        return tradeRepo.save(trade);
-    }
+                // The client is not allowed to choose the initial status.
+                trade.setStatus("PENDING");
 
-    public void softDelete(Long id, String actor) {
-        Trade trade = tradeRepo.findById(id)
-                .orElseThrow(() -> new TradeNotFoundException("id"+id));
-        trade.softDelete();
-        tradeRepo.save(trade);
-    }
+                Trade saved = tradeRepo.save(trade);
 
-    @Transactional(readOnly = true)
-    public Page<Trade> list(LocalDate from, LocalDate to, String status, Long counterpartyId, Pageable pageable) {
-        Specification<Trade> spec = Specification
-                .where(tradeDateBetween(from, to))
-                .and(hasStatus(status))
-                .and(forCounterparty(counterpartyId));
-        return tradeRepo.findAll(spec, pageable);
-    }
+                metrics.incrementTradeCreated();
+
+                double tradeNotional = saved.getQuantity()
+                                .multiply(saved.getPrice())
+                                .doubleValue();
+
+                metrics.recordTradeValue(tradeNotional);
+
+                return saved;
+        }
+
+        public Trade update(Long id, TradeRequest req, String actor) {
+                Trade trade = tradeRepo.findById(id)
+                                .orElseThrow(() -> new TradeNotFoundException(String.valueOf(id)));
+
+                // Allow the trade to retain its own existing reference, but prevent it
+                // from taking another trade's unique reference.
+                if (!trade.getTradeRef().equals(req.tradeRef())) {
+                        tradeRepo.findByTradeRef(req.tradeRef())
+                                        .filter(existing -> !existing.getId().equals(id))
+                                        .ifPresent(existing -> {
+                                                throw new DuplicateTradeRefException(
+                                                                req.tradeRef());
+                                        });
+                }
+
+                var instrument = instRepo.findById(req.instrumentId())
+                                .orElseThrow(() -> new TradeNotFoundException(
+                                                "instrument " + req.instrumentId()));
+
+                var counterparty = cpRepo.findById(req.counterpartyId())
+                                .orElseThrow(() -> new TradeNotFoundException(
+                                                "counterparty " + req.counterpartyId()));
+
+                trade.setTradeRef(req.tradeRef());
+                trade.setInstrument(instrument);
+                trade.setCounterparty(counterparty);
+                trade.setAssetClass(req.assetClass());
+                trade.setSide(req.side());
+                trade.setQuantity(req.quantity());
+                trade.setPrice(req.price());
+                trade.setTradeDate(req.tradeDate());
+
+                // Do not reset the status. PUT replaces the fields represented by
+                // TradeRequest; status is handled separately by ADV066.
+
+                return trade;
+        }
+
+        public Trade updateStatus(Long id, String status, String actor) {
+                Trade trade = tradeRepo.findById(id)
+                                .orElseThrow(() -> new TradeNotFoundException("id" + id));
+                trade.setStatus(status);
+                return tradeRepo.save(trade);
+        }
+
+        public void softDelete(Long id, String actor) {
+                Trade trade = tradeRepo.findById(id)
+                                .orElseThrow(() -> new TradeNotFoundException("id" + id));
+                trade.softDelete();
+                tradeRepo.save(trade);
+        }
+
+        @Transactional(readOnly = true)
+        public Page<Trade> list(LocalDate from, LocalDate to, String status, Long counterpartyId, Pageable pageable) {
+                Specification<Trade> spec = Specification
+                                .where(tradeDateBetween(from, to))
+                                .and(hasStatus(status))
+                                .and(forCounterparty(counterpartyId));
+                return tradeRepo.findAll(spec, pageable);
+        }
 }

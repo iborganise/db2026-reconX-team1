@@ -30,12 +30,30 @@ public class Instrument {
     @Column(length = 12)
     private String isin;
 
-    public Instrument() {}
+    public Instrument() {
+    }
 
-    public Long getId()         { return id; }
-    public String getSymbol()   { return symbol; }
-    public String getName()     { return name; }
-    public String getAssetClass(){ return assetClass; }
-    public String getCurrency() { return currency; }
-    public String getIsin()     { return isin; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAssetClass() {
+        return assetClass;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public String getIsin() {
+        return isin;
+    }
 }
